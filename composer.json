@@ -1,0 +1,78 @@
+{
+    "name": "sopinet/colorize",
+    "description": "Colorize library extends some php color libraries",
+    "keywords": ["color", "design", "php", "css", "magic"],
+    "homepage": "https://github.com/sopinet/colorize",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fernando Hidalgo",
+            "email": "fhidalgo@sopinet.com",
+            "homepage": "http://sopinet.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "sabberworm/php-css-parser": "dev-master",
+        "humanmade/Colors-Of-Image": "dev-master",
+        "hasbridge/php-color": "dev-master",
+        "kennwilson/colormap-php": "dev-master",
+        "raulfraile/ladybug": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Sopinet\\Colorize\\": "lib/"    
+        }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "version": "master",
+                "name": "humanmade/Colors-Of-Image",
+                "source": {
+                    "url": "https://github.com/humanmade/Colors-Of-Image.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "dist": {
+                    "url": "https://github.com/humanmade/Colors-Of-Image/zipball/master",
+                    "type": "zip"
+                }                
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "version": "master",
+                "name": "kennwilson/colormap-php",
+                "source": {
+                    "url": "https://github.com/kennwilson/colormap-php.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "dist": {
+                    "url": "https://github.com/kennwilson/colormap-php/zipball/master",
+                    "type": "zip"
+                 }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "version": "master",
+                "name": "hasbridge/php-color",
+                "source": {
+                    "url": "https://github.com/hasbridge/php-color.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "dist": {
+                    "url": "https://github.com/hasbridge/php-color/zipball/master",
+                    "type": "zip"
+                 }
+            }
+        }
+    ]  
+}
