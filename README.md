@@ -1,4 +1,4 @@
 colorize
 ========
 
-Colorize library extends some php color libraries
+Auto-Colorize your css files from Image/Logo
