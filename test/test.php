@@ -4,6 +4,8 @@
 	use Sopinet\Colorize\ColorizeHelper;
 
 	require_once '../vendor/autoload.php';
+	
+	// TODO: AutoLoad these class
 	require_once '../vendor/humanmade/Colors-Of-Image/colorsofimage.class.php';
 	require_once '../vendor/kennwilson/colormap-php/colormap.php';
 	
