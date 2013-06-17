@@ -11,6 +11,7 @@
 
 	$img_src = $_GET['img_src'];
 	if ($img_src == "") $img_src = "http://www.sopinet.com/layout/bootstrap/template/sopinetoliva_mini.png";
+	
 	$new_css = ColorizeService::autoColorize("template.css", $img_src);
 
 	include("layout.php");
