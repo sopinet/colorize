@@ -3,11 +3,24 @@ namespace Sopinet\Colorize;
 
 class ColorizeHelper
 {
-	static public function getColorsFromImage($image_src) {
-		//$image_src = "http://www.sopinet.com/layout/bootstrap/template/sopinetoliva_mini.png";
-		$image = new \ColorsOfImage( $image_src, 5, 5);
-		$colors_img = $image->getProminentColors();
-		return $colors_img;		
+	static public function getColorsFromImage($image_src, $library = "getmost") {
+		if ($library == "colorsofimage") {
+			$image = new \ColorsOfImage( $image_src, 5, 10);
+			$colors_img = $image->getProminentColors();
+		} else if ($library == "getmost") {
+			$delta = 24;
+			$reduce_brightness = true;
+			$reduce_gradients = true;
+			$num_results = 20;
+			
+			$ex=new GetMostCommonColors();
+			$colors=$ex->Get_Color($image_src, $num_results, $reduce_brightness, $reduce_gradients, $delta);
+			$colors_img = array();
+			foreach($colors as $key => $value) {
+				$colors_img[] = "#" . $key;
+			}
+		}
+		return $colors_img;
 	}
 	
 	static public function getColorsFromCss($file_css) {
