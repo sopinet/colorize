@@ -3,6 +3,13 @@ namespace Sopinet\Colorize;
 
 class ColorizeHelper
 {
+	/**
+	 * get Colors used in an Image
+	 * 
+	 * @param string $image_src - Url to Image file
+	 * @param string $library - getmost or colorsofimage library 
+	 * @return multitype:string - Array of colors from image
+	 */
 	static public function getColorsFromImage($image_src, $library = "getmost") {
 		if ($library == "colorsofimage") {
 			$image = new \ColorsOfImage( $image_src, 5, 10);
@@ -23,6 +30,12 @@ class ColorizeHelper
 		return $colors_img;
 	}
 	
+	/**
+	 * get Colors used in a css
+	 * 
+	 * @param String $file_css - Url to Css file
+	 * @return multitype:number - Array of colors from css
+	 */
 	static public function getColorsFromCss($file_css) {
 		$oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($file_css));
 		$oCss = $oCssParser->parse();
@@ -73,6 +86,14 @@ class ColorizeHelper
 		return $colors_css;
 	}
 	
+	/**
+	 * Replace colors in css with colors from image
+	 * 
+	 * @param string $file_css - Url to Css file
+	 * @param array $colors_css - Array of colors in CSS file
+	 * @param array $colors_img - Array of colors in Image file
+	 * @return string - Css parsed with new colors
+	 */
 	static public function paintCssWithColors($file_css, $colors_css, $colors_img) {
 		$oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($file_css));
 		$oCss = $oCssParser->parse();
