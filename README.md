@@ -2,7 +2,6 @@ colorize
 ========
 
 Auto-Colorize your css files from Image/Logo
-
 TRY DEMO SAMPLE: http://colorize.sopinet.com
 
 documentation
