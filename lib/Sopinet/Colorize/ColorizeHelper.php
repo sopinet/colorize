@@ -37,34 +37,27 @@ class ColorizeHelper
 		return $colors_img;
 	}
 	
-	/**
-	 * get Colors used in a css
-	 * 
-	 * @param String $file_css - Url to Css file
-	 * @return multitype:number - Array of colors from css
-	 */
-	static public function getColorsFromCss($file_css) {
-		$oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($file_css));
+	static public function getColorsFromParserCss($oCssParser) {
 		$oCss = $oCssParser->parse();
-
+		
 		/*
 		 * https://github.com/ju1ius/PHP-CSS-Parser
-		 */
+		*/
 		/*
-		$map = new \ColorMap();
+		 $map = new \ColorMap();
 		$colors_css = array();
 		foreach($oCss->getAllValues() as $mValue) {
-		    if($mValue instanceof CSSColor) {
-		    	$color = $mValue->getColor();
-		    	$color_a['r'] = $color['r']->__toString();
-		    	$color_a['g'] = $color['g']->__toString();
-		    	$color_a['b'] = $color['b']->__toString();
-		    	$hex  = $map->rgb_to_hex($color_a);
-		    	if (!array_key_exists($hex, $colors_css)) {
-		    		$colors_css[$hex] = 0;
-		    	}
-		    	$colors_css[$hex]++;
-		    }
+		if($mValue instanceof CSSColor) {
+		$color = $mValue->getColor();
+		$color_a['r'] = $color['r']->__toString();
+		$color_a['g'] = $color['g']->__toString();
+		$color_a['b'] = $color['b']->__toString();
+		$hex  = $map->rgb_to_hex($color_a);
+		if (!array_key_exists($hex, $colors_css)) {
+		$colors_css[$hex] = 0;
+		}
+		$colors_css[$hex]++;
+		}
 		}
 		
 		return $colors_css;
@@ -89,8 +82,24 @@ class ColorizeHelper
 				//}
 			}
 		}
-
+		
 		return $colors_css;
+	}
+	
+	static public function getColorsFromStringCss($string_css) {
+		$oCssParser = new \Sabberworm\CSS\Parser($string_css);
+		return ColorizeHelper::getColorsFromParserCss($oCssParser);		
+	}
+	
+	/**
+	 * get Colors used in a css
+	 * 
+	 * @param String $file_css - Url to Css file
+	 * @return multitype:number - Array of colors from css
+	 */
+	static public function getColorsFromCss($file_css) {
+		$oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($file_css));
+		return ColorizeHelper::getColorsFromParserCss($oCssParser);
 	}
 	
 	/**
@@ -101,8 +110,8 @@ class ColorizeHelper
 	 * @param array $colors_img - Array of colors in Image file
 	 * @return string - Css parsed with new colors
 	 */
-	static public function paintCssWithColors($file_css, $colors_css, $colors_img) {
-		$oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($file_css));
+	static public function paintCssWithColors($string_css, $colors_css, $colors_img) {
+		$oCssParser = new \Sabberworm\CSS\Parser($string_css);
 		$oCss = $oCssParser->parse();
 				
 		foreach($oCss->getAllRuleSets() as $t) {
