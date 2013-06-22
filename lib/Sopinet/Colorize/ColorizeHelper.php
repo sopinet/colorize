@@ -1,20 +1,27 @@
 <?php
 namespace Sopinet\Colorize;
 
+use Sopinet\Colorize\GetMostCommonColors;
+use Sopinet\Colorize\ColorMap;
+
 class ColorizeHelper
 {
 	/**
 	 * get Colors used in an Image
 	 * 
 	 * @param string $image_src - Url to Image file
-	 * @param string $library - getmost or colorsofimage library 
+	 * @param string $library - getmost or colorsofimage library (colorsofimage removed) 
 	 * @return multitype:string - Array of colors from image
 	 */
 	static public function getColorsFromImage($image_src, $library = "getmost") {
+		/*
+		 * Removed colorsofimage library, waiting that author will add composer/PSR-0
+		 * 
 		if ($library == "colorsofimage") {
 			$image = new \ColorsOfImage( $image_src, 5, 10);
 			$colors_img = $image->getProminentColors();
 		} else if ($library == "getmost") {
+		*/
 			$delta = 24;
 			$reduce_brightness = true;
 			$reduce_gradients = true;
@@ -26,7 +33,7 @@ class ColorizeHelper
 			foreach($colors as $key => $value) {
 				$colors_img[] = "#" . $key;
 			}
-		}
+		//}
 		return $colors_img;
 	}
 	
@@ -63,7 +70,7 @@ class ColorizeHelper
 		return $colors_css;
 		*/
 		
-		$map = new \ColorMap();
+		$map = new ColorMap();
 		$colors_css = array();
 		foreach($oCss->getAllRuleSets() as $ruleSet) {
 			foreach($ruleSet->getRules() as $rule) {
@@ -105,7 +112,7 @@ class ColorizeHelper
 					$color_a['r'] = $color['r']->__toString();
 					$color_a['g'] = $color['g']->__toString();
 					$color_a['b'] = $color['b']->__toString();
-					$map = new \ColorMap();
+					$map = new ColorMap();
 					$hex  = $map->rgb_to_hex($color_a);
 		
 					$order = 0;
@@ -113,7 +120,7 @@ class ColorizeHelper
 						if ($key == $hex) {
 							if (array_key_exists($order, $colors_img)) {
 								//ladybug_dump($colors_img[$order]);
-								$map = new \ColorMap();
+								$map = new ColorMap();
 								$setca = $map->hex_to_rgb($colors_img[$order]);
 								//exit();
 								$setc['r'] = new \Sabberworm\CSS\Value\Size($setca['r'], null, true);

@@ -1,6 +1,12 @@
 <?php
 namespace Sopinet\Colorize;
 /**
+ * EXTERNALS LIBRARY, 
+ * FERNANDO HIDALGO IS NOT AUTHOR OF THIS LIBRARY
+ * I AM TRYING THAT AUTHOR USE COMPOSER FOR IT
+ * 
+ * 
+ * 
  * This class can be used to get the most common colors in an image.
  * It needs one parameter:
  * 	$image - the filename of the image you want to process.
