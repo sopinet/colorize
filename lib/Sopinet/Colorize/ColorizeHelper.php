@@ -2,7 +2,7 @@
 namespace Sopinet\Colorize;
 
 use Sopinet\Colorize\GetMostCommonColors;
-use Sopinet\Colorize\ColorMap;
+use KennWilson\ColorMap\ColorMap;
 
 class ColorizeHelper
 {
