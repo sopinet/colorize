@@ -11,13 +11,19 @@ class ColorizeService
 	 * @return string - Css parsed with colors from image
 	 */
 	static public function autoColorize($css, $image) {
-		$colors_css = ColorizeHelper::getColorsFromCss($css);		
-		$colors_img = ColorizeHelper::getColorsFromImage($image);
-		return ColorizeHelper::paintCssWithColors(file_get_contents($css), $colors_css, $colors_img);
+		$string_css = file_get_contents($css);
+		return ColorizeService::autoColorizeFromString($string_css, $image);
 	}
 	
+	/**
+	 * Return new css parsed from colors in image with css string
+	 * 
+	 * @param String $string_css - String with css code
+	 * @param String $image - Url to image file
+	 * @return String <string, string, mixed> - Css parsed with colors from image
+	 */
 	static public function autoColorizeFromString($string_css, $image) {
-		$colors_css = ColorizeHelper::getColorsFromStringCss($string_css);
+		$colors_css = ColorizeHelper::getColorsFromCss($string_css);
 		$colors_img = ColorizeHelper::getColorsFromImage($image);
 		return ColorizeHelper::paintCssWithColors($string_css, $colors_css, $colors_img);
 	}

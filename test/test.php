@@ -3,7 +3,7 @@
 	use Sopinet\Colorize\ColorizeHelper;
 
 	require_once '../vendor/autoload.php';	
-	// Ladybug\Loader::loadHelpers();
+	Ladybug\Loader::loadHelpers();
 ini_set("display_errors",1);
 	$img_src = $_GET['img_src'];
 	if ($img_src == "") $img_src = "http://www.sopinet.com/layout/bootstrap/template/sopinetoliva_mini.png";

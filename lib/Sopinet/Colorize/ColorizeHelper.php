@@ -13,138 +13,89 @@ class ColorizeHelper
 	 * @param string $library - getmost or colorsofimage library (colorsofimage removed) 
 	 * @return multitype:string - Array of colors from image
 	 */
-	static public function getColorsFromImage($image_src, $library = "getmost") {
-		/*
-		 * Removed colorsofimage library, waiting that author will add composer/PSR-0
-		 * 
-		if ($library == "colorsofimage") {
-			$image = new \ColorsOfImage( $image_src, 5, 10);
-			$colors_img = $image->getProminentColors();
-		} else if ($library == "getmost") {
-		*/
-			$delta = 24;
-			$reduce_brightness = true;
-			$reduce_gradients = true;
-			$num_results = 20;
-			
-			$ex=new GetMostCommonColors();
-			$colors=$ex->Get_Color($image_src, $num_results, $reduce_brightness, $reduce_gradients, $delta);
-			$colors_img = array();
-			foreach($colors as $key => $value) {
-				$colors_img[] = "#" . $key;
-			}
-		//}
+	static public function getColorsFromImage($image_src) {
+		$delta = 24;
+		$reduce_brightness = true;
+		$reduce_gradients = true;
+		$num_results = 20;
+		
+		$ex=new GetMostCommonColors();
+		$colors=$ex->Get_Color($image_src, $num_results, $reduce_brightness, $reduce_gradients, $delta);
+		$colors_img = array();
+		foreach($colors as $key => $value) {
+			$colors_img[] = "#" . $key;
+		}
 		return $colors_img;
-	}
-	
-	static public function getColorsFromParserCss($oCssParser) {
-		$oCss = $oCssParser->parse();
-		
-		/*
-		 * https://github.com/ju1ius/PHP-CSS-Parser
-		*/
-		/*
-		 $map = new \ColorMap();
-		$colors_css = array();
-		foreach($oCss->getAllValues() as $mValue) {
-		if($mValue instanceof CSSColor) {
-		$color = $mValue->getColor();
-		$color_a['r'] = $color['r']->__toString();
-		$color_a['g'] = $color['g']->__toString();
-		$color_a['b'] = $color['b']->__toString();
-		$hex  = $map->rgb_to_hex($color_a);
-		if (!array_key_exists($hex, $colors_css)) {
-		$colors_css[$hex] = 0;
-		}
-		$colors_css[$hex]++;
-		}
-		}
-		
-		return $colors_css;
-		*/
-		
-		$map = new ColorMap();
-		$colors_css = array();
-		foreach($oCss->getAllRuleSets() as $ruleSet) {
-			foreach($ruleSet->getRules() as $rule) {
-				if (method_exists($rule->getValue(), 'getColor')) {
-					$color = $rule->getValue()->getColor();
-					$color_a['r'] = $color['r']->__toString();
-					$color_a['g'] = $color['g']->__toString();
-					$color_a['b'] = $color['b']->__toString();
-					$hex  = $map->rgb_to_hex($color_a);
-					//$hex_without = str_replace("#","",$hex);
-					if (!array_key_exists($hex, $colors_css)) {
-						$colors_css[$hex] = 0;
-					}
-					$colors_css[$hex]++;
-				}
-				//}
-			}
-		}
-		
-		return $colors_css;
-	}
-	
-	static public function getColorsFromStringCss($string_css) {
-		$oCssParser = new \Sabberworm\CSS\Parser($string_css);
-		return ColorizeHelper::getColorsFromParserCss($oCssParser);		
 	}
 	
 	/**
 	 * get Colors used in a css
-	 * 
-	 * @param String $file_css - Url to Css file
+	 *
+	 * @param String $string_css - String with css code
 	 * @return multitype:number - Array of colors from css
-	 */
-	static public function getColorsFromCss($file_css) {
-		$oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($file_css));
-		return ColorizeHelper::getColorsFromParserCss($oCssParser);
+	 */	
+	static public function getColorsFromCss($string_css) {
+		$normal_regex = "~(#([0-9A-Fa-f]{3,6})\b)|
+(aqua)|(black)|(blue)|(fuchsia)|
+(gray)|(green)|(lime)|(maroon)|
+(navy)|(olive)|(orange)|(purple)|
+(red)|(silver)|(teal)|(white)|(yellow)~";
+		preg_match_all($normal_regex, $string_css, $matches_normal);
+		
+		$rgb_color_regex = "~rgb\\(\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])\\s*\\)~";		
+		preg_match_all($rgb_color_regex, $string_css, $matches_rgb);
+		
+		$rgba_color_regex = "~rgba\\(\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])\\s*,\\s*((0.[1-9])|[01])\\s*\\)~";		
+		preg_match_all($rgba_color_regex, $string_css, $matches_rgba);
+
+		$colors_css = array();
+		$map = new ColorMap();
+		foreach($matches_normal[0] as $match) {
+			if ($match[0] == "#") {
+				$temp = $map->hex_to_six($match);
+			} else {
+				$temp = $map->name_to_hex($match);
+			}
+			if (!array_key_exists($temp, $colors_css)) {
+				$colors_css[$temp] = array();
+			}
+			$colors_css[$temp][] = $match;
+		}
+		
+		foreach($matches_rgba[0] as $match) {
+			$temp0 = explode(",",$match);
+			$temp1 = explode("(",$temp0[0]);
+			$color_a['r'] = $temp1[1];
+			$color_a['g'] = $temp0[1];
+			$color_a['b'] = $temp0[2];
+			$temp = $map->rgb_to_hex($color_a);
+			if (!array_key_exists($temp, $colors_css)) {
+				$colors_css[$temp] = array();
+			}
+			$colors_css[$temp][] = $match;
+		}
+		arsort($colors_css);
+		return $colors_css;
 	}
 	
 	/**
 	 * Replace colors in css with colors from image
-	 * 
-	 * @param string $file_css - Url to Css file
-	 * @param array $colors_css - Array of colors in CSS file
+	 *
+	 * @param string $string_css - String with css code
+	 * @param array $colors_css - Array of colors in CSS code
 	 * @param array $colors_img - Array of colors in Image file
 	 * @return string - Css parsed with new colors
-	 */
+	 */	
 	static public function paintCssWithColors($string_css, $colors_css, $colors_img) {
-		$oCssParser = new \Sabberworm\CSS\Parser($string_css);
-		$oCss = $oCssParser->parse();
-				
-		foreach($oCss->getAllRuleSets() as $t) {
-			foreach($t->getRules() as $i) {
-				if (method_exists($i->getValue(), 'getColor')) {
-					$color = $i->getValue()->getColor();
-					$color_a['r'] = $color['r']->__toString();
-					$color_a['g'] = $color['g']->__toString();
-					$color_a['b'] = $color['b']->__toString();
-					$map = new ColorMap();
-					$hex  = $map->rgb_to_hex($color_a);
-		
-					$order = 0;
-					foreach($colors_css as $key => $value) {
-						if ($key == $hex) {
-							if (array_key_exists($order, $colors_img)) {
-								//ladybug_dump($colors_img[$order]);
-								$map = new ColorMap();
-								$setca = $map->hex_to_rgb($colors_img[$order]);
-								//exit();
-								$setc['r'] = new \Sabberworm\CSS\Value\Size($setca['r'], null, true);
-								$setc['g'] = new \Sabberworm\CSS\Value\Size($setca['g'], null, true);
-								$setc['b'] = new \Sabberworm\CSS\Value\Size($setca['b'], null, true);;
-								$i->getValue()->setColor($setc);
-							}
-						}
-						$order++;
-					}
+		$i = 0;
+		foreach($colors_css as $keycolor => $array_forreplace) {
+			if ($i < count($colors_img)) {
+				foreach($array_forreplace as $color_forreplace) {
+					$string_css = str_replace($color_forreplace, $colors_img[$i], $string_css);
 				}
-				//}
 			}
+			$i++;
 		}
-		
-		return $oCss->__toString();
+		return $string_css;
 	}
 }
