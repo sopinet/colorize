@@ -7,7 +7,6 @@ TRY DEMO SAMPLE: http://colorize.sopinet.com
 
 TODO
 ====
-- add better parsing css library (performance problem now)
 - inverse color? apply lightness (less) or php library
 - others...
 
