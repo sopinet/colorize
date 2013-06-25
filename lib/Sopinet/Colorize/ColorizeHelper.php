@@ -84,9 +84,10 @@ class ColorizeHelper
 	 * @param string $string_css - String with css code
 	 * @param array $colors_css - Array of colors in CSS code
 	 * @param array $colors_img - Array of colors in Image file
+	 * @param boolean $checkinverse - Boolean for check inverse colors problems
 	 * @return string - Css parsed with new colors
 	 */	
-	static public function paintCssWithColors($string_css, $colors_css, $colors_img) {
+	static public function paintCssWithColors($string_css, $colors_css, $colors_img, $checkinverse = true) {
 		$i = 0;
 		foreach($colors_css as $keycolor => $array_forreplace) {
 			if ($i < count($colors_img)) {
@@ -96,6 +97,57 @@ class ColorizeHelper
 			}
 			$i++;
 		}
-		return $string_css;
+		if ($checkinverse) {
+			return ColorizeHelper::fixInverse($string_css);
+		} else {
+			return $string_css;
+		}
+	}
+	
+	static private function isTooLightYIQ($R, $G, $B){
+		$yiq = (($R*299)+($G*587)+($B*114))/1000;
+		return $yiq >= 128;
+	}	
+	
+	static private function getInverseColor($rgb1,$rgb2) {
+		$map = new ColorMap();
+		$rgb1 = $map->hex_to_six($rgb1);
+		$aRGB = $map->hex_to_rgb($rgb1);
+		if (count($aRGB) > 2) {
+			if (ColorizeHelper::isTooLightYIQ($aRGB['r'], $aRGB['g'], $aRGB['b'])) return "#000";
+			else return "#FFF";
+		} else {
+			return "#F00";
+		}
+	}
+	
+	static private function fixInverse($string_css) {
+		$elements = explode("}", $string_css);
+		$ret_string_css = "";
+		foreach($elements as $element) {
+			$temp = explode("{", $element);
+			if (count($temp) > 1) {
+				$attributes = explode(";",$temp[1]);
+				$color = "";
+				$bgcolor = "";
+				foreach($attributes as $attribute) {
+					$forreplace = explode(":",$attribute);
+					//exit();
+					if (trim($forreplace[0]) == "color") {
+						$color_at = $attribute;
+						$color = $forreplace[1];
+					} elseif (trim($forreplace[0]) == "background-color") {
+						$bgcolor_at = $attribute;
+						$bgcolor = $forreplace[1];
+					}
+				}
+				if ($color != "" && $bgcolor != "") {
+					$element = str_replace($color_at, "color: ".ColorizeHelper::getInverseColor($bgcolor, $color), $element);
+					$element = str_replace($bgcolor_at, "background-color: ".$bgcolor, $element);
+				}
+			}
+			$ret_string_css .= $element . "} ";
+		}
+		return $ret_string_css;
 	}
 }

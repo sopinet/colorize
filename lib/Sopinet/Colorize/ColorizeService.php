@@ -27,4 +27,10 @@ class ColorizeService
 		$colors_img = ColorizeHelper::getColorsFromImage($image);
 		return ColorizeHelper::paintCssWithColors($string_css, $colors_css, $colors_img);
 	}
+	
+	static public function getMainBackgroundColor($image) {
+		//TODO: do cache
+		$colors_img = ColorizeHelper::getColorsFromImage($image);
+		return $colors_img[0];
+	}
 }
