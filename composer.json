@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.3.0",
         "sabberworm/php-css-parser": "dev-master",
-        "raulfraile/ladybug": "dev-master",
+        "raulfraile/ladybug": "v0.7",
         "kennwilson/colormap": "dev-master"
     },
     "autoload": {
